@@ -1,0 +1,5 @@
+spring:
+  application:
+    name : ms-login-service
+  profiles :
+    active : dev

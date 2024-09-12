@@ -1,0 +1,24 @@
+server :
+  port : 8081
+  application:
+    name: ms-login-service
+
+spring:
+  datasource:
+    url: jdbc:mysql://34.100.148.67:3306/logindb?cloudSqlInstance=nextgen-db
+    username: root
+    password: admin@12345
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: https://nextgensuperapp.uc.r.appspot.com/
