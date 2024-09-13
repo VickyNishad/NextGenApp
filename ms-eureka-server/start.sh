@@ -25,9 +25,13 @@ deploy_service() {
 
     # Kill the existing service if running
     echo "Stopping any existing instance of $SERVICE_NAME running on port $PORT..." >> $LOG_FILE
-    PID=$(lsof -t -i:$PORT)
+
+    # Find the PID of the process using the specified port
+    PID=$(powershell -Command "Get-NetTCPConnection -LocalPort $PORT | Select-Object -ExpandProperty OwningProcess")
+
     if [ ! -z "$PID" ]; then
-        kill -9 $PID
+        echo "Stopping process with PID $PID..." >> $LOG_FILE
+        powershell -Command "Stop-Process -Id $PID -Force" >> $LOG_FILE 2>&1
         echo "$SERVICE_NAME stopped (PID $PID)." >> $LOG_FILE
     else
         echo "No running instance of $SERVICE_NAME found on port $PORT." >> $LOG_FILE
