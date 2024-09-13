@@ -21,7 +21,7 @@ deploy_service() {
 
     # Clean and package the Maven project
     echo "Building $SERVICE_NAME..." >> $LOG_FILE
-    mvn clean package >> $LOG_FILE 2>&1
+    mvn clean package -DskipTests -T 4 >> $LOG_FILE 2>&1
 
     # Kill the existing service if running
     echo "Stopping any existing instance of $SERVICE_NAME running on port $PORT..." >> $LOG_FILE
