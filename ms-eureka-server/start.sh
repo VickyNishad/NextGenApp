@@ -2,8 +2,8 @@
 
 # Define service name, directory, and port
 SERVICE_NAME="ms-eureka-server"
-BASE_DIR="D:/spring-boot-microservicess/NextGenApp/ms-eureka-server/$SERVICE_NAME"
-LOG_FILE="D:/spring-boot-microservicess/NextGenApp/ms-eureka-server/deploy-$SERVICE_NAME.log"
+BASE_DIR="D:/spring-boot-microservicess/NextGenApp/$SERVICE_NAME"
+LOG_FILE="D:/spring-boot-microservicess/NextGenApp/deploy-$SERVICE_NAME.log"
 PORT="8761"
 
 # Function to deploy the service
