@@ -27,7 +27,9 @@ deploy_service() {
     echo "Stopping any existing instance of $SERVICE_NAME running on port $PORT..." >> "$LOG_FILE"
 
     # Find the PID of the process using the specified port (using netstat as lsof is not available on Windows)
-    PID=$(netstat -ano | findstr :$PORT | awk '{print $5}')
+#    PID=$(netstat -ano | findstr :$PORT | awk '{print $5}')
+     PID=$(netstat -ano | findstr :$PORT | powershell -Command "$input | ForEach-Object { $_.Trim() -split '\s+' | Select-Object -Last 1 }")
+
 
     if [ ! -z "$PID" ]; then
         echo "Stopping process with PID $PID..." >> "$LOG_FILE"
