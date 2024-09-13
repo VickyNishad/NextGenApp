@@ -8,42 +8,42 @@ PORT="8761"
 
 # Function to deploy the service
 deploy_service() {
-    echo "=======================================" >> $LOG_FILE
-    echo "Deploying $SERVICE_NAME on port $PORT" >> $LOG_FILE
-    echo "=======================================" >> $LOG_FILE
+    echo "=======================================" >> "$LOG_FILE"
+    echo "Deploying $SERVICE_NAME on port $PORT" >> "$LOG_FILE"
+    echo "=======================================" >> "$LOG_FILE"
 
     # Navigate to the service directory
-    cd $BASE_DIR
+    cd "$BASE_DIR" || exit
 
     # Pull the latest code from GitHub
-    echo "Pulling latest code for $SERVICE_NAME..." >> $LOG_FILE
-    git pull origin main >> $LOG_FILE 2>&1
+    echo "Pulling latest code for $SERVICE_NAME..." >> "$LOG_FILE"
+    git pull origin main >> "$LOG_FILE" 2>&1
 
     # Clean and package the Maven project
-    echo "Building $SERVICE_NAME..." >> $LOG_FILE
-    mvn clean package -DskipTests -T 4 >> $LOG_FILE 2>&1
+    echo "Building $SERVICE_NAME..." >> "$LOG_FILE"
+    mvn clean package -DskipTests -T 4 >> "$LOG_FILE" 2>&1
 
     # Kill the existing service if running
-    echo "Stopping any existing instance of $SERVICE_NAME running on port $PORT..." >> $LOG_FILE
+    echo "Stopping any existing instance of $SERVICE_NAME running on port $PORT..." >> "$LOG_FILE"
 
-    # Find the PID of the process using the specified port
-    PID=$(powershell -Command "Get-NetTCPConnection -LocalPort $PORT | Select-Object -ExpandProperty OwningProcess")
+    # Find the PID of the process using the specified port (using netstat as lsof is not available on Windows)
+    PID=$(netstat -ano | findstr :$PORT | awk '{print $5}')
 
     if [ ! -z "$PID" ]; then
-        echo "Stopping process with PID $PID..." >> $LOG_FILE
-        powershell -Command "Stop-Process -Id $PID -Force" >> $LOG_FILE 2>&1
-        echo "$SERVICE_NAME stopped (PID $PID)." >> $LOG_FILE
+        echo "Stopping process with PID $PID..." >> "$LOG_FILE"
+        taskkill //PID $PID //F >> "$LOG_FILE" 2>&1
+        echo "$SERVICE_NAME stopped (PID $PID)." >> "$LOG_FILE"
     else
-        echo "No running instance of $SERVICE_NAME found on port $PORT." >> $LOG_FILE
+        echo "No running instance of $SERVICE_NAME found on port $PORT." >> "$LOG_FILE"
     fi
 
     # Deploy the new version
-    echo "Starting $SERVICE_NAME..." >> $LOG_FILE
-    nohup java -jar target/*.jar --server.port=$PORT > $BASE_DIR/$SERVICE_NAME.log 2>&1 &
-    echo "$SERVICE_NAME deployed successfully!" >> $LOG_FILE
+    echo "Starting $SERVICE_NAME..." >> "$LOG_FILE"
+    nohup java -jar target/*.jar --server.port=$PORT > "$BASE_DIR/$SERVICE_NAME.log" 2>&1 &
+    echo "$SERVICE_NAME deployed successfully!" >> "$LOG_FILE"
 }
 
 # Call the deployment function
 deploy_service
 
-echo "Deployment completed at $(date)." >> $LOG_FILE
+echo "Deployment completed at $(date)." >> "$LOG_FILE"
