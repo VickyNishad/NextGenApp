@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define service name, directory, and port
-SERVICE_NAME="ms-login-server"
+SERVICE_NAME="ms-login-service"
 BASE_DIR="D:/spring-boot-microservicess/NextGenApp/$SERVICE_NAME"
 LOG_FILE="D:/spring-boot-microservicess/NextGenApp/deploy-$SERVICE_NAME.log"
 PORT="8081"
